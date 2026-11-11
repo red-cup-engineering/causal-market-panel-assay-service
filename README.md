@@ -8,3 +8,11 @@
 <!-- 561-group-standards:badges:end -->
 
 Causally aligns observed entity series and refuses leakage, duplicate time, or malformed measures.
+
+`assayCausalPanel({ seriesByEntity, asOf })` takes per-entity arrays of
+`{ at, value, auxiliary? }` observations. It normalizes timestamps to UTC
+and returns the observations shared by every entity, in time order. Values
+must be finite numbers or nonempty numeric strings. Duplicate timestamps and
+observations later than `asOf` fail even if they would be dropped by alignment.
+
+Run `npm test` to verify alignment, cutoff enforcement, and malformed inputs.

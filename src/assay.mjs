@@ -1,4 +1,7 @@
 const numeric = (value, label) => {
+  if (typeof value !== "number" && (typeof value !== "string" || !value.trim())) {
+    throw new TypeError(`${label}-invalid`);
+  }
   const number = Number(value);
   if (!Number.isFinite(number) || Object.is(number, -0)) throw new TypeError(`${label}-invalid`);
   return number;
@@ -6,7 +9,11 @@ const numeric = (value, label) => {
 
 export function assayCausalPanel({ seriesByEntity, asOf, minimumEntities = 2, minimumObservations = 3 } = {}) {
   const cutoff = Date.parse(asOf);
-  if (!Number.isFinite(cutoff) || !seriesByEntity || typeof seriesByEntity !== "object" || Array.isArray(seriesByEntity)) throw new TypeError("causal-panel-input-invalid");
+  if (!Number.isFinite(cutoff) || !seriesByEntity || typeof seriesByEntity !== "object" || Array.isArray(seriesByEntity) ||
+      !Number.isSafeInteger(minimumEntities) || minimumEntities < 1 ||
+      !Number.isSafeInteger(minimumObservations) || minimumObservations < 1) {
+    throw new TypeError("causal-panel-input-invalid");
+  }
   const entities = Object.keys(seriesByEntity).sort();
   if (entities.length < minimumEntities) throw new RangeError("causal-panel-entities-insufficient");
   const indexed = new Map();
